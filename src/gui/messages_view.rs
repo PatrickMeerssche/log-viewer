@@ -44,7 +44,7 @@ pub fn render_messages_view(
         // Total pill
         render_stat_pill(
             ui,
-            &format!("📋 All ({})", messages.len()),
+            &format!("All ({})", messages.len()),
             state.severity_filter.is_none(),
             Color32::from_rgb(59, 130, 246),
             || {
@@ -56,7 +56,7 @@ pub fn render_messages_view(
         let err_color = Color32::from_rgb(239, 68, 68);
         render_stat_pill(
             ui,
-            &format!("🚨 Errors ({})", error_count),
+            &format!("Errors ({})", error_count),
             state.severity_filter == Some(MessageSeverity::Error),
             err_color,
             || {
@@ -72,7 +72,7 @@ pub fn render_messages_view(
         let warn_color = Color32::from_rgb(245, 158, 11);
         render_stat_pill(
             ui,
-            &format!("⚠️ Warnings ({})", warn_count),
+            &format!("Warnings ({})", warn_count),
             state.severity_filter == Some(MessageSeverity::Warning),
             warn_color,
             || {
@@ -88,7 +88,7 @@ pub fn render_messages_view(
         let event_color = Color32::from_rgb(14, 165, 233);
         render_stat_pill(
             ui,
-            &format!("🚀 Events ({})", event_count),
+            &format!("Events ({})", event_count),
             state.severity_filter == Some(MessageSeverity::Event),
             event_color,
             || {
@@ -123,14 +123,14 @@ pub fn render_messages_view(
     let mut copy_all_text = None;
 
     ui.horizontal(|ui| {
-        ui.label(RichText::new("🔍").size(14.0));
+        ui.label(RichText::new("Filter:").size(13.0));
         let _search_edit = ui.add(
             egui::TextEdit::singleline(&mut state.search_query)
                 .hint_text("Filter by error text, PreArm, subsystem, code...")
                 .desired_width(280.0),
         );
 
-        if !state.search_query.is_empty() && ui.button("✖").on_hover_text("Clear search").clicked() {
+        if !state.search_query.is_empty() && ui.button("Clear").on_hover_text("Clear search").clicked() {
             state.search_query.clear();
         }
 
@@ -156,7 +156,7 @@ pub fn render_messages_view(
 
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             if ui
-                .button(RichText::new("📋 Copy All Filtered").size(12.0))
+                .button(RichText::new("Copy All").size(12.0))
                 .on_hover_text("Copy all currently visible messages to clipboard")
                 .clicked()
             {
@@ -363,7 +363,7 @@ pub fn render_messages_view(
                             // Copy button on hover / right side
                             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                                 if ui
-                                    .small_button("📋")
+                                    .small_button("Copy")
                                     .on_hover_text("Copy message to clipboard")
                                     .clicked()
                                 {
@@ -421,7 +421,7 @@ fn render_empty_state(ui: &mut Ui, active_log_name: Option<&str>) {
     ui.centered_and_justified(|ui| {
         ui.vertical_centered(|ui| {
             ui.add_space(40.0);
-            ui.heading(RichText::new("🚨 Messages & Flight Errors").size(20.0).strong());
+            ui.heading(RichText::new("Messages & Flight Errors").size(20.0).strong());
             ui.add_space(10.0);
 
             if let Some(name) = active_log_name {

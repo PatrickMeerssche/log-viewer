@@ -12,7 +12,7 @@ pub fn render_stats_view(ui: &mut Ui, table: &LoadedTable) -> StatsAction {
 
     ui.vertical(|ui| {
         ui.horizontal(|ui| {
-            ui.heading(RichText::new("📊 Column Statistics").size(15.0).strong());
+            ui.heading(RichText::new("Column Statistics").size(15.0).strong());
             ui.label(
                 RichText::new(format!("({} columns)", table.stats.len()))
                     .size(12.0)
@@ -95,7 +95,7 @@ pub fn render_stats_view(ui: &mut Ui, table: &LoadedTable) -> StatsAction {
 
                         row.col(|ui| {
                             if stat.is_numeric {
-                                if ui.button(RichText::new("📈 Plot").size(11.0)).clicked() {
+                                if ui.button(RichText::new("Plot").size(11.0)).clicked() {
                                     action = StatsAction::PlotColumn(stat.name.clone());
                                 }
                             }

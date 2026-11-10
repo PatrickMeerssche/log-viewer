@@ -151,7 +151,7 @@ pub fn render_graph_view(
 
                     // Auto bounds / Fit view button
                     if ui
-                        .button(RichText::new("🎯 Fit View").strong().color(Color32::from_rgb(147, 197, 253)))
+                        .button(RichText::new("Fit View").strong().color(Color32::from_rgb(147, 197, 253)))
                         .on_hover_text("Reset zoom and camera bounds to fit all plotted points")
                         .clicked()
                     {
@@ -160,11 +160,11 @@ pub fn render_graph_view(
 
                     ui.separator();
 
-                    // Export Image menu
-                    ui.menu_button(RichText::new("📷 Export Plot").strong().color(Color32::from_rgb(110, 231, 183)), |ui| {
+                    // Save as menu
+                    ui.menu_button(RichText::new("Save as").strong().color(Color32::from_rgb(110, 231, 183)), |ui| {
                         if ui
-                            .button("📐 Save as Vector SVG (.svg)...")
-                            .on_hover_text("High-resolution scalable vector graphic for papers, posters, and reports")
+                            .button("SVG")
+                            .on_hover_text("Save as scalable vector graphic (.svg)")
                             .clicked()
                         {
                             ui.close();
@@ -187,8 +187,8 @@ pub fn render_graph_view(
                         }
 
                         if ui
-                            .button("🖼️ Save as High-Res PNG (.png)...")
-                            .on_hover_text("Export 1920x1080 high-definition raster image")
+                            .button("PNG")
+                            .on_hover_text("Save as high-resolution image (.png)")
                             .clicked()
                         {
                             ui.close();
@@ -235,7 +235,7 @@ pub fn render_graph_view(
 
                     ui.vertical(|ui| {
                         ui.horizontal(|ui| {
-                            ui.label(RichText::new("📈 Variables to Plot").strong().size(13.0));
+                            ui.label(RichText::new("Variables to Plot").strong().size(13.0));
                             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                                 if ui.button(RichText::new("Clear").size(10.0)).clicked() {
                                     state.selected_y.clear();
@@ -259,7 +259,7 @@ pub fn render_graph_view(
 
                         ui.add(
                             egui::TextEdit::singleline(&mut state.column_search)
-                                .hint_text("🔍 Search columns...")
+                                .hint_text("Search columns...")
                                 .desired_width(ui.available_width()),
                         );
 
@@ -307,7 +307,7 @@ pub fn render_graph_view(
                                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                                             // Solo button: plot ONLY this column with 1 click
                                             if ui
-                                                .button(RichText::new("👁 Solo").size(10.0))
+                                                .button(RichText::new("Solo").size(10.0))
                                                 .on_hover_text("Plot ONLY this variable")
                                                 .clicked()
                                             {
@@ -361,11 +361,11 @@ pub fn render_graph_view(
                 if state.selected_y.is_empty() {
                     ui.centered_and_justified(|ui| {
                         ui.vertical_centered(|ui| {
-                            ui.heading(RichText::new("📊 No Variables Selected").size(18.0).color(Color32::GRAY));
+                            ui.heading(RichText::new("No Variables Selected").size(18.0).color(Color32::GRAY));
                             ui.add_space(6.0);
                             ui.label("Select variables from the list on the left to start graphing.");
                             ui.add_space(10.0);
-                            if ui.button(RichText::new("⚡ Select First Numeric Column").size(13.0)).clicked() {
+                            if ui.button(RichText::new("Select First Numeric Column").size(13.0)).clicked() {
                                 if let Some(first) = table.stats.iter().find(|s| s.is_numeric && s.name != state.selected_x) {
                                     state.selected_y.insert(first.name.clone());
                                     state.is_dirty = true;
@@ -470,7 +470,7 @@ fn render_smart_presets(ui: &mut Ui, table: &LoadedTable, state: &mut PlotState)
     let name_up = table.name.to_uppercase();
 
     if name_up.contains("BAT") {
-        if ui.button(RichText::new("⚡ Curr & Volt").size(10.5)).clicked() {
+        if ui.button(RichText::new("Curr & Volt").size(10.5)).clicked() {
             state.selected_y.clear();
             for candidate in &["Curr", "current_battery", "Volt", "Volt_ext", "voltages"] {
                 if table.stats.iter().any(|s| s.is_numeric && s.name.eq_ignore_ascii_case(candidate)) {
@@ -482,7 +482,7 @@ fn render_smart_presets(ui: &mut Ui, table: &LoadedTable, state: &mut PlotState)
             state.request_reset_bounds = true;
         }
     } else if name_up.contains("ATT") {
-        if ui.button(RichText::new("🔄 Roll, Pitch, Yaw").size(10.5)).clicked() {
+        if ui.button(RichText::new("Roll, Pitch, Yaw").size(10.5)).clicked() {
             state.selected_y.clear();
             for candidate in &["Roll", "Pitch", "Yaw", "DesRoll", "DesPitch", "DesYaw"] {
                 if table.stats.iter().any(|s| s.is_numeric && s.name.eq_ignore_ascii_case(candidate)) {
@@ -495,7 +495,7 @@ fn render_smart_presets(ui: &mut Ui, table: &LoadedTable, state: &mut PlotState)
         }
     } else if name_up.contains("IMU") {
         ui.horizontal(|ui| {
-            if ui.button(RichText::new("📈 Accel X/Y/Z").size(10.0)).clicked() {
+            if ui.button(RichText::new("Accel X/Y/Z").size(10.0)).clicked() {
                 state.selected_y.clear();
                 for candidate in &["AccX", "AccY", "AccZ", "xacc", "yacc", "zacc"] {
                     if table.stats.iter().any(|s| s.is_numeric && s.name.eq_ignore_ascii_case(candidate)) {
@@ -505,7 +505,7 @@ fn render_smart_presets(ui: &mut Ui, table: &LoadedTable, state: &mut PlotState)
                 state.is_dirty = true;
                 state.request_reset_bounds = true;
             }
-            if ui.button(RichText::new("🧭 Gyro X/Y/Z").size(10.0)).clicked() {
+            if ui.button(RichText::new("Gyro X/Y/Z").size(10.0)).clicked() {
                 state.selected_y.clear();
                 for candidate in &["GyrX", "GyrY", "GyrZ", "xgyro", "ygyro", "zgyro"] {
                     if table.stats.iter().any(|s| s.is_numeric && s.name.eq_ignore_ascii_case(candidate)) {
@@ -517,7 +517,7 @@ fn render_smart_presets(ui: &mut Ui, table: &LoadedTable, state: &mut PlotState)
             }
         });
     } else if name_up.contains("CTUN") {
-        if ui.button(RichText::new("📏 Alt & DesAlt").size(10.5)).clicked() {
+        if ui.button(RichText::new("Alt & DesAlt").size(10.5)).clicked() {
             state.selected_y.clear();
             for candidate in &["Alt", "DAlt", "BAlt", "CRt", "DCRt"] {
                 if table.stats.iter().any(|s| s.is_numeric && s.name.eq_ignore_ascii_case(candidate)) {
@@ -528,7 +528,7 @@ fn render_smart_presets(ui: &mut Ui, table: &LoadedTable, state: &mut PlotState)
             state.request_reset_bounds = true;
         }
     } else if name_up.contains("VIBE") {
-        if ui.button(RichText::new("📳 Vibe X/Y/Z").size(10.5)).clicked() {
+        if ui.button(RichText::new("Vibe X/Y/Z").size(10.5)).clicked() {
             state.selected_y.clear();
             for candidate in &["VibeX", "VibeY", "VibeZ", "Clip0", "Clip1"] {
                 if table.stats.iter().any(|s| s.is_numeric && s.name.eq_ignore_ascii_case(candidate)) {

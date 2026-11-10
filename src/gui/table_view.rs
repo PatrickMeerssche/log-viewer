@@ -96,7 +96,7 @@ pub fn render_table_view(
     ui.vertical(|ui| {
         // Controls Row
         ui.horizontal(|ui| {
-            ui.label(RichText::new("🔍 Search:").size(13.0));
+            ui.label(RichText::new("Search:").size(13.0));
             let edit_resp = ui.add(
                 egui::TextEdit::singleline(&mut state.search_query)
                     .hint_text("Filter cells across all columns...")
@@ -106,7 +106,7 @@ pub fn render_table_view(
                 state.is_dirty = true;
             }
 
-            if !state.search_query.is_empty() && ui.button("✖ Clear").clicked() {
+            if !state.search_query.is_empty() && ui.button("Clear").clicked() {
                 state.search_query.clear();
                 state.is_dirty = true;
             }
@@ -133,7 +133,7 @@ pub fn render_table_view(
             ui.separator();
 
             // Export to CSV button
-            if ui.button("💾 Export Filtered CSV").on_hover_text("Save current filtered/sorted rows to CSV").clicked() {
+            if ui.button("Export Filtered CSV").on_hover_text("Save current filtered/sorted rows to CSV").clicked() {
                 if let Some(path) = rfd::FileDialog::new()
                     .set_file_name(&format!("{}_export.csv", table.name))
                     .add_filter("CSV", &["csv"])

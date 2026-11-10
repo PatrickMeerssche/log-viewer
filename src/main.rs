@@ -107,13 +107,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     if web_mode || !has_display {
         if !has_display && !web_mode {
-            println!("ℹ️ No graphical display detected ($DISPLAY unset). Falling back to Web Dashboard.");
+            println!("[INFO] No graphical display detected ($DISPLAY unset). Falling back to Web Dashboard.");
         }
 
-        println!("🚀 Starting Telemetry & Log Visualizer Web Server...");
+        println!("[INFO] Starting Telemetry & Log Visualizer Web Server...");
         let handle = web_server::start_web_server(logs_dir, csv_dir, script_path, port)?;
         let url = format!("http://127.0.0.1:{}", handle.port);
-        println!("✨ Web Dashboard is running at: {}", url);
+        println!("[INFO] Web Dashboard is running at: {}", url);
         println!("Opening in browser... (Press Ctrl+C to stop)");
 
         let _ = webbrowser::open(&url);

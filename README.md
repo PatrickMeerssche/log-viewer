@@ -9,7 +9,7 @@ A fast, interactive cross-platform Rust desktop & web application to scan, conve
 
 ---
 
-## 📦 Pre-compiled Standalone Releases (No Rust Required!)
+## Pre-compiled Standalone Releases (No Rust Required!)
 
 If you just want to run the visualizer without installing Rust or Cargo:
 
@@ -22,13 +22,13 @@ If you just want to run the visualizer without installing Rust or Cargo:
 
 ---
 
-## 📸 Export Plots to High-Resolution Images
+## Export Plots to High-Resolution Images
 
 Export publication-ready graphs directly from both Desktop and Web interfaces:
 - **Vector SVG (`.svg`)**: Crisp, infinitely scalable vector graphics for reports, papers, and presentations with grid lines, axes labels, and legend.
 - **High-Resolution PNG (`.png`)**: Standalone, lossless raster image rendering of the active plot.
-- **Desktop GUI**: Click `📷 Export Plot` in the graph toolbar and select **Vector SVG** or **High-Res PNG**.
-- **Web Dashboard**: Click `📷 Export PNG` or `📐 Export SVG` right next to the chart controls to instantly download the graph.
+- **Desktop GUI**: Click **Save as** in the graph toolbar and select **SVG** or **PNG**.
+- **Web Dashboard**: Click **SVG** or **PNG** under **Save as:** right next to the chart controls to instantly download the graph.
 
 ---
 
@@ -82,19 +82,19 @@ pip install pymavlink
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Interactive Launchers (Recommended)
 
 Simply press **Enter** for each prompt to accept default settings (Native GUI, `./logs`, `./csv`):
 
-#### 🐧 On Linux, macOS, WSL, or Git Bash:
+#### On Linux, macOS, WSL, or Git Bash:
 
 ```bash
 ./log-viewer
 ```
 
-#### 🪟 On Windows:
+#### On Windows:
 
 - **Command Prompt (`cmd.exe`)**:
   ```cmd
@@ -166,7 +166,7 @@ OPTIONS:
 
 ---
 
-## 📂 Project Architecture
+## Project Architecture
 
 ```
 log-viewer/

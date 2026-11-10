@@ -447,7 +447,7 @@ tr:hover td { background: var(--bg-hover); }
 </head>
 <body>
 <header>
-  <h1>✈️ Log & Telemetry Visualizer <span class="header-badge">Rust + Web Engine</span></h1>
+  <h1>Log & Telemetry Visualizer <span class="header-badge">Rust Engine</span></h1>
   <div id="statusHeader" style="font-size: 0.85rem; color: var(--text-muted);">Ready</div>
 </header>
 <div class="container">
@@ -455,7 +455,7 @@ tr:hover td { background: var(--bg-hover); }
     <div class="sidebar-section">
       <div class="sidebar-title">
         <span>Logs in ./logs</span>
-        <button class="btn btn-sm" onclick="fetchLogs()">🔄 Refresh</button>
+        <button class="btn btn-sm" onclick="fetchLogs()">Refresh</button>
       </div>
       <input type="text" id="logFilter" placeholder="Filter logs..." oninput="renderLogList()">
     </div>
@@ -473,10 +473,10 @@ tr:hover td { background: var(--bg-hover); }
 
   <div class="main-content">
     <div class="tab-bar">
-      <div class="tab active" onclick="switchTab('graph')">📈 Interactive Graph</div>
-      <div class="tab" onclick="switchTab('table')">📋 Table Data View</div>
-      <div class="tab" onclick="switchTab('stats')">📊 Column Statistics</div>
-      <div class="tab" id="tab-messages-btn" onclick="switchTab('messages')">🚨 Messages & Errors</div>
+      <div class="tab active" onclick="switchTab('graph')">Graph</div>
+      <div class="tab" onclick="switchTab('table')">Table View</div>
+      <div class="tab" onclick="switchTab('stats')">Column Statistics</div>
+      <div class="tab" id="tab-messages-btn" onclick="switchTab('messages')">Messages & Errors</div>
     </div>
 
     <!-- Graph Tab -->
@@ -506,9 +506,10 @@ tr:hover td { background: var(--bg-hover); }
           </select>
         </div>
         <button class="btn" style="margin-top: 14px;" onclick="loadPlot()">Update Plot</button>
-        <div style="margin-left: auto; display: flex; gap: 8px; align-items: flex-end; margin-top: 14px;">
-          <button class="btn btn-sm" onclick="exportWebPlot('png')" title="Export high-resolution PNG">📷 Export PNG</button>
-          <button class="btn btn-sm" onclick="exportWebPlot('svg')" title="Export vector SVG">📐 Export SVG</button>
+        <div style="margin-left: auto; display: flex; gap: 6px; align-items: center; margin-top: 14px;">
+          <span style="font-size: 0.85rem; color: var(--text-muted); margin-right: 4px;">Save as:</span>
+          <button class="btn btn-sm" onclick="exportWebPlot('svg')" title="Save as scalable vector graphic">SVG</button>
+          <button class="btn btn-sm" onclick="exportWebPlot('png')" title="Save as high-resolution image">PNG</button>
         </div>
       </div>
       <div class="chart-wrapper">
@@ -563,10 +564,10 @@ tr:hover td { background: var(--bg-hover); }
         <input type="text" id="msgSearch" placeholder="Filter messages, errors, subsystems..." style="max-width: 320px;" oninput="renderMessages()">
         <select id="msgSeverityFilter" onchange="renderMessages()" style="max-width: 150px;">
           <option value="ALL">All Severities</option>
-          <option value="ERROR">🔴 Errors Only</option>
-          <option value="WARN">🟡 Warnings</option>
-          <option value="EVENT">🔵 Events</option>
-          <option value="INFO">⚪ Info</option>
+          <option value="ERROR">Errors</option>
+          <option value="WARN">Warnings</option>
+          <option value="EVENT">Events</option>
+          <option value="INFO">Info</option>
         </select>
         <span id="msgCountBadge" style="font-size: 0.85rem; color: var(--text-muted);">0 messages</span>
       </div>
@@ -630,7 +631,7 @@ function renderLogList() {
 
     div.innerHTML = `
       <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px;">
-        📄 <strong>${log.filename}</strong><br>
+        <strong>${log.filename}</strong><br>
         <span style="font-size: 0.75rem; color: var(--text-muted);">${log.extension.toUpperCase()} • ${formatSize(log.size_bytes)}</span>
       </div>
       <div>${badge}</div>
@@ -667,13 +668,13 @@ async function loadMessages(filename) {
     const tabBtn = document.getElementById('tab-messages-btn');
     if (tabBtn) {
       if (errCount > 0) {
-        tabBtn.innerText = `🚨 Messages & Errors (${errCount})`;
+        tabBtn.innerText = `Messages & Errors (${errCount})`;
         tabBtn.style.color = '#fca5a5';
       } else if (messages.length > 0) {
-        tabBtn.innerText = `💬 Messages (${messages.length})`;
+        tabBtn.innerText = `Messages (${messages.length})`;
         tabBtn.style.color = '';
       } else {
-        tabBtn.innerText = '🚨 Messages & Errors';
+        tabBtn.innerText = 'Messages & Errors';
         tabBtn.style.color = '';
       }
     }
@@ -739,7 +740,7 @@ function renderTableList() {
     div.onclick = () => selectTable(table);
 
     div.innerHTML = `
-      <div>📊 <strong>${table.name}</strong></div>
+      <div><strong>${table.name}</strong></div>
       <span class="badge badge-green">${table.row_count} rows</span>
     `;
     list.appendChild(div);
@@ -844,7 +845,7 @@ function renderStats(stats) {
   tbody.innerHTML = stats.map(s => `
     <tr>
       <td><strong>${s.name}</strong></td>
-      <td>${s.is_numeric ? '✅ Yes' : '❌ No'}</td>
+      <td>${s.is_numeric ? 'Yes' : 'No'}</td>
       <td>${s.total_count}</td>
       <td>${s.null_count}</td>
       <td>${s.min !== null ? s.min.toFixed(3) : '-'}</td>

@@ -13,7 +13,7 @@ if exist ".\log_visualizer.exe" (
 ) else if exist ".\target\debug\log_visualizer.exe" (
     set "BIN=.\target\debug\log_visualizer.exe"
 ) else (
-    echo [INFO] Building log_visualizer binary (first run)...
+    echo [INFO] Building log_visualizer binary for first run...
     where cargo >nul 2>nul
     if %ERRORLEVEL% neq 0 (
         echo [ERROR] Cargo / Rust is not found in PATH!

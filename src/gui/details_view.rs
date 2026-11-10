@@ -74,11 +74,11 @@ pub fn render_details_view(
             ui.add_space(12.0);
 
             ui.horizontal(|ui| {
-                if ui.button("🔄 Reconvert / Re-extract Tables").clicked() {
+                if ui.button("Reconvert Tables").clicked() {
                     action = DetailsAction::ReconvertLog(log.filename.clone());
                 }
 
-                if ui.button("📂 Open Output Folder").clicked() {
+                if ui.button("Open Output Folder").clicked() {
                     let _ = webbrowser::open(&log.output_dir.to_string_lossy());
                 }
             });
@@ -87,7 +87,7 @@ pub fn render_details_view(
         }
 
         ui.add_space(16.0);
-        ui.heading(RichText::new("📜 Conversion Log / Console Output").size(14.0).strong());
+        ui.heading(RichText::new("Console Output / Conversion Log").size(14.0).strong());
         ui.add_space(4.0);
 
         ScrollArea::vertical()

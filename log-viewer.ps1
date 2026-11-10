@@ -31,7 +31,7 @@ if (-not (Test-Path $BinPath)) {
         if (Test-Path $DebugBin) {
             $BinPath = $DebugBin
         } else {
-            Write-Host "⚙️ Building log_visualizer binary (first run)..." -ForegroundColor Cyan
+            Write-Host "[INFO] Building log_visualizer binary..." -ForegroundColor Cyan
             if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
                 Write-Error "Cargo / Rust is not found in PATH! Please install Rust from https://rustup.rs/"
                 exit 1
@@ -65,7 +65,7 @@ if ($PSBoundParameters.Count -gt 0 -or $PassedDirectArgs.Count -gt 0) {
 
 # Interactive CLI configuration when run with no arguments
 Write-Host "======================================================" -ForegroundColor Cyan
-Write-Host "   ✈️  Telemetry & Flight Log Visualizer Launcher    " -ForegroundColor Cyan
+Write-Host "      Telemetry & Flight Log Visualizer Launcher      " -ForegroundColor Cyan
 Write-Host "======================================================" -ForegroundColor Cyan
 Write-Host "Press [Enter] to accept the default for any setting.`n"
 
@@ -112,7 +112,7 @@ if ($IsWeb) {
 }
 
 Write-Host "------------------------------------------------------" -ForegroundColor Cyan
-Write-Host "🚀 Launching: $BinPath $($FinalArgs -join ' ')" -ForegroundColor White
+Write-Host "Launching: $BinPath $($FinalArgs -join ' ')" -ForegroundColor White
 Write-Host "------------------------------------------------------`n" -ForegroundColor Cyan
 
 & $BinPath @FinalArgs

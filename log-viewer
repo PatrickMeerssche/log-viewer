@@ -19,7 +19,7 @@ elif [ -x "./target/debug/log_visualizer" ]; then
 elif [ -x "./target/debug/log_visualizer.exe" ]; then
     BIN="./target/debug/log_visualizer.exe"
 else
-    echo "⚙️ Building log_visualizer binary (first run)..."
+    echo "[INFO] Building log_visualizer binary..."
     cargo build --release
     if [ -x "./target/release/log_visualizer.exe" ]; then
         BIN="./target/release/log_visualizer.exe"
@@ -41,7 +41,7 @@ YELLOW='\033[0;33m'
 RESET='\033[0m'
 
 echo -e "${BOLD}${CYAN}======================================================${RESET}"
-echo -e "${BOLD}${CYAN}   ✈️  Telemetry & Flight Log Visualizer Launcher    ${RESET}"
+echo -e "${BOLD}${CYAN}      Telemetry & Flight Log Visualizer Launcher      ${RESET}"
 echo -e "${BOLD}${CYAN}======================================================${RESET}"
 echo -e "Press ${BOLD}[Enter]${RESET} to accept the default for any setting.\n"
 
@@ -107,7 +107,7 @@ if [ -n "$PORT_FLAG" ]; then
 fi
 
 echo -e "${CYAN}------------------------------------------------------${RESET}"
-echo -e "🚀 Launching: ${BOLD}$BIN ${ARGS[*]}${RESET}"
+echo -e "Launching: ${BOLD}$BIN ${ARGS[*]}${RESET}"
 echo -e "${CYAN}------------------------------------------------------${RESET}\n"
 
 exec "$BIN" "${ARGS[@]}"

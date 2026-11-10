@@ -340,7 +340,7 @@ impl eframe::App for TelemetryVisualizerApp {
         Panel::top("top_header_panel").show(ui, |ui| {
             ui.add_space(4.0);
             ui.horizontal(|ui| {
-                ui.heading(RichText::new("✈️ Telemetry & Flight Log Visualizer").size(16.0).strong());
+                ui.heading(RichText::new("Telemetry & Flight Log Visualizer").size(16.0).strong());
 
                 if let Some(idx) = self.active_log_idx {
                     if let Some(log) = self.logs.get(idx) {
@@ -364,7 +364,7 @@ impl eframe::App for TelemetryVisualizerApp {
 
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     if ui
-                        .button(RichText::new("🌐 Web Dashboard").size(12.0))
+                        .button(RichText::new("Web Dashboard").size(12.0))
                         .on_hover_text("Open interactive web browser dashboard")
                         .clicked()
                     {
@@ -470,20 +470,20 @@ impl eframe::App for TelemetryVisualizerApp {
                         }
                     };
 
-                    tab_button(ActiveTab::Graph, "📈 Interactive Graph", false);
-                    tab_button(ActiveTab::Table, "📋 Table View", false);
-                    tab_button(ActiveTab::Stats, "📊 Column Stats", false);
+                    tab_button(ActiveTab::Graph, "Graph", false);
+                    tab_button(ActiveTab::Table, "Table View", false);
+                    tab_button(ActiveTab::Stats, "Column Stats", false);
 
                     let msg_label = if err_count > 0 {
-                        format!("🚨 Messages & Errors ({})", err_count)
+                        format!("Messages & Errors ({})", err_count)
                     } else if total_msg > 0 {
-                        format!("💬 Messages ({})", total_msg)
+                        format!("Messages ({})", total_msg)
                     } else {
-                        "🚨 Messages & Errors".to_string()
+                        "Messages & Errors".to_string()
                     };
                     tab_button(ActiveTab::Messages, &msg_label, err_count > 0);
 
-                    tab_button(ActiveTab::Details, "ℹ️ Log Details", false);
+                    tab_button(ActiveTab::Details, "Log Details", false);
 
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                         if let Some(ref table) = self.loaded_table {
@@ -512,7 +512,7 @@ impl eframe::App for TelemetryVisualizerApp {
                         } else {
                             ui.centered_and_justified(|ui| {
                                 ui.vertical_centered(|ui| {
-                                    ui.heading(RichText::new("📈 No Table Selected for Graph").size(16.0).color(Color32::GRAY));
+                                    ui.heading(RichText::new("No Table Selected for Graph").size(16.0).color(Color32::GRAY));
                                     ui.add_space(8.0);
                                     ui.label("Select a telemetry table from the sidebar on the left (e.g. BAT, ATT, GPS).");
                                 });
@@ -525,7 +525,7 @@ impl eframe::App for TelemetryVisualizerApp {
                         } else {
                             ui.centered_and_justified(|ui| {
                                 ui.vertical_centered(|ui| {
-                                    ui.heading(RichText::new("📋 No Table Selected").size(16.0).color(Color32::GRAY));
+                                    ui.heading(RichText::new("No Table Selected").size(16.0).color(Color32::GRAY));
                                     ui.add_space(8.0);
                                     ui.label("Select a table from the sidebar to inspect its rows and columns.");
                                 });
@@ -544,7 +544,7 @@ impl eframe::App for TelemetryVisualizerApp {
                         } else {
                             ui.centered_and_justified(|ui| {
                                 ui.vertical_centered(|ui| {
-                                    ui.heading(RichText::new("📊 No Table Selected").size(16.0).color(Color32::GRAY));
+                                    ui.heading(RichText::new("No Table Selected").size(16.0).color(Color32::GRAY));
                                     ui.add_space(8.0);
                                     ui.label("Select a table from the sidebar to compute column statistics.");
                                 });
@@ -566,7 +566,7 @@ impl eframe::App for TelemetryVisualizerApp {
                 // Empty State / Instructions
                 ui.centered_and_justified(|ui| {
                     ui.vertical_centered(|ui| {
-                        ui.heading(RichText::new("🚀 Telemetry & Flight Log Visualizer").size(22.0).strong());
+                        ui.heading(RichText::new("Telemetry & Flight Log Visualizer").size(22.0).strong());
                         ui.add_space(8.0);
                         ui.label(
                             RichText::new("Select a log from the sidebar on the left to begin.")
@@ -578,7 +578,7 @@ impl eframe::App for TelemetryVisualizerApp {
                             "• ArduPilot / PX4 .bin files\n• MAVLink telemetry .tlog files\n• CSV tables & logs",
                         );
                         ui.add_space(20.0);
-                        if ui.button(RichText::new("🔄 Refresh ./logs Directory").size(14.0)).clicked() {
+                        if ui.button(RichText::new("Refresh Logs Directory").size(14.0)).clicked() {
                             self.refresh_logs();
                         }
                     });

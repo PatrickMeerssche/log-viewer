@@ -31,24 +31,24 @@ pub fn render_sidebar(
     ui.vertical(|ui| {
         // --- LOGS SECTION ---
         ui.horizontal(|ui| {
-            ui.heading(RichText::new("📁 Logs").size(15.0).strong());
+            ui.heading(RichText::new("Logs").size(15.0).strong());
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 if ui
-                    .button(RichText::new("➕").size(12.0))
+                    .button(RichText::new("+ Add").size(11.0))
                     .on_hover_text("Add external log file (.bin, .tlog, .csv) into ./logs")
                     .clicked()
                 {
                     action.add_log_files = true;
                 }
                 if ui
-                    .button(RichText::new("🔄").size(12.0))
+                    .button(RichText::new("Refresh").size(11.0))
                     .on_hover_text("Refresh ./logs")
                     .clicked()
                 {
                     action.refresh_logs = true;
                 }
                 if ui
-                    .button(RichText::new("⚡ All").size(11.0))
+                    .button(RichText::new("Convert All").size(11.0))
                     .on_hover_text("Convert all unconverted logs")
                     .clicked()
                 {
@@ -59,7 +59,7 @@ pub fn render_sidebar(
 
         ui.add(
             egui::TextEdit::singleline(log_filter)
-                .hint_text("🔍 Filter logs...")
+                .hint_text("Filter logs...")
                 .desired_width(ui.available_width()),
         );
 
@@ -84,17 +84,24 @@ pub fn render_sidebar(
                 for log in filtered_logs {
                     let is_active = active_log_name == Some(&log.filename);
 
-                    let icon = match log.extension.to_lowercase().as_str() {
-                        "bin" => "⚙️",
-                        "tlog" => "📡",
-                        "csv" => "📊",
-                        _ => "📄",
+                    let tag_name = log.extension.to_uppercase();
+                    let tag_color = match log.extension.to_lowercase().as_str() {
+                        "bin" => Color32::from_rgb(147, 197, 253),
+                        "tlog" => Color32::from_rgb(253, 186, 116),
+                        "csv" => Color32::from_rgb(110, 231, 183),
+                        _ => Color32::from_rgb(148, 163, 184),
                     };
 
                     ui.horizontal(|ui| {
+                        ui.label(
+                            RichText::new(&tag_name)
+                                .size(9.0)
+                                .monospace()
+                                .color(tag_color),
+                        );
                         let resp = ui.selectable_label(
                             is_active,
-                            RichText::new(format!("{} {}", icon, log.filename))
+                            RichText::new(&log.filename)
                                 .strong()
                                 .size(12.5),
                         );
@@ -152,7 +159,7 @@ pub fn render_sidebar(
 
         // --- TABLES SECTION ---
         ui.horizontal(|ui| {
-            ui.heading(RichText::new("📊 Tables").size(15.0).strong());
+            ui.heading(RichText::new("Tables").size(15.0).strong());
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 ui.label(
                     RichText::new(format!("({} tables)", tables.len()))
@@ -164,7 +171,7 @@ pub fn render_sidebar(
 
         ui.add(
             egui::TextEdit::singleline(table_filter)
-                .hint_text("🔍 Filter tables (e.g. BAT, ATT)...")
+                .hint_text("Filter tables (e.g. BAT, ATT)...")
                 .desired_width(ui.available_width()),
         );
 
@@ -195,7 +202,7 @@ pub fn render_sidebar(
                     ui.horizontal(|ui| {
                         let resp = ui.selectable_label(
                             is_active,
-                            RichText::new(format!("📋 {}", table.name))
+                            RichText::new(&table.name)
                                 .strong()
                                 .size(12.0),
                         );
