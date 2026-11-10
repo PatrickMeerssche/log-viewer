@@ -1,62 +1,22 @@
-# ✈️ Telemetry & Flight Log Visualizer (Rust)
+# Telemetry & Flight Log Visualizer
 
 A fast, interactive Rust desktop & web application to scan, convert, inspect, and graph ArduPilot (`.bin`), MAVLink telemetry (`.tlog`), and CSV logs from `./logs`.
 
-Built with **egui**, **eframe**, and **egui_plot** for native 60 FPS hardware-accelerated desktop visualization, with an embedded modern **Web Dashboard** powered by **Plotly.js** and **tiny_http**.
+---
 
 ---
 
-## ✨ Features
-
-- **Automatic Log Discovery**:
-  - Scans `./logs` for all `.bin`, `.tlog`, `.log`, and `.csv` files.
-  - Live search/filtering of log files by name.
-  - Shows file size, extension, and table conversion status badges.
-- **One-Click Log-to-Tables Converter**:
-  - Convert any `.bin` or `.tlog` log into individual message tables with a single click.
-  - "Extract All" batch conversion button.
-  - Runs in a background thread so the user interface never freezes.
-  - Displays converter terminal output in the *Log Details* console.
-- **Interactive Multi-Series Plotter (`egui_plot`)**:
-  - Choose any column for the **X-Axis** (auto-detects `_timestamp`, `TimeUS`, or row index).
-  - Choose one or multiple columns for the **Y-Axis** (e.g., `Roll`, `Pitch`, `Yaw` or `Curr`, `Volt`).
-  - **Group / Split by Column**: Auto-detects instance identifiers like `Inst` or `id` (e.g. from battery tables) and splits the data into distinct colored series: `Curr (Inst=0)`, `Curr (Inst=1)`!
-  - Chart types: **Line**, **Scatter (Dots)**, and **Step**.
-  - Dynamic downsampling options (`5,000`, `10,000`, `25,000`, or full resolution) for smooth rendering of massive logs.
-  - Real-time zoom (mouse wheel / drag), pan (right drag), auto bounds reset, and coordinate cursor tooltips.
-  - Toggleable interactive legend.
-- **Full Table Inspector**:
-  - Browse every row and column of any extracted table.
-  - Search filter across all table cells.
-  - Sort by any column (numeric or alphabetical) with header click.
-  - Paginated table with configurable page sizes (25, 50, 100, 250, 500, 1000).
-  - "💾 Export Filtered CSV" button.
-- **Column Statistics**:
-  - Quick statistical breakdown for all columns: min, max, mean, standard deviation, count, and null counts.
-  - One-click `📈 Plot` shortcut to jump straight to graphing that column.
-- **🚨 Flight Messages & Errors Viewer**:
-  - **Pre-Arm Failures & Critical Warnings**: Instantly detects and highlights pre-arm check failures (e.g. `PreArm: RC not found`, `PreArm: Rangefinder 1: Not Detected`, `PreArm: Gyros inconsistent`), battery warnings, and AHRS failures.
-  - **Subsystem Error Decoding**: Automatically decodes hardware errors from the `ERR` table into human-readable subsystems (Radio Control, Compass, Barometer, Inertial Nav, EKF, FailSafes, GPS) and status (fault detected vs error cleared).
-  - **Flight Event Tracking**: Automatically decodes flight events from the `EV` table (Armed, Disarmed, Auto-Armed, Takeoff, Land Complete, Fence Breached, Mode Changes).
-  - **MAVLink Status Texts**: Parses severity levels (Emergency, Critical, Error, Warning, Notice, Info) from `STATUSTEXT` logs.
-  - **Severity Badges & 1-Click Filters**: Interactive badges for `All`, `🚨 Errors`, `⚠️ Warnings`, `🚀 Events`, and `ℹ️ Info` to isolate issues in seconds.
-  - **Live Search & Copy**: Filter across all messages, error codes, and subsystems in real time. 1-click `📋 Copy` per row or `📋 Copy All Filtered` for incident reporting.
-  - **Tab Alert Highlighting**: Tab button highlights error counts with red alerts (e.g. `🚨 Messages & Errors (109)`).
-- **Dual Mode (Desktop GUI & Web Dashboard)**:
-  - **Desktop GUI**: Native immediate-mode GUI window.
-  - **Web Dashboard**: Click "🌐 Web Dashboard" or run with `--web` to launch the browser UI with Plotly.js charts and web messages viewer.
-  - Automatic fallback to Web Dashboard if no graphical display (`$DISPLAY`) is available.
-
----
-
-## 📋 Requirements & Prerequisites
+## Requirements & Prerequisites
 
 ### 1. Rust Compiler (Required)
+
 Install the official Rust toolchain via [rustup.rs](https://rustup.rs/):
+
 ```bash
 # Linux / macOS
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
+
 On **Windows**, download and run `rustup-init.exe` from [rustup.rs](https://rustup.rs/).
 
 ### 2. Platform GUI Libraries (For Native Desktop GUI mode)
@@ -85,10 +45,13 @@ On **Windows**, download and run `rustup-init.exe` from [rustup.rs](https://rust
 > If running on a headless server without a desktop GUI (`$DISPLAY` unset), the app automatically starts the **Web Dashboard** on port 8080.
 
 ### 3. Python 3 & pymavlink (Optional — for raw `.bin` / `.tlog` extraction)
+
 The application includes a background Python converter (`old scripts/log_to_csv.py`) for decoding binary ArduPilot `.bin` and MAVLink `.tlog` files into CSV tables.
+
 ```bash
 pip install pymavlink
 ```
+
 *(If you are only visualizing existing CSV files or pre-extracted tables, Python is not needed).*
 
 ---
@@ -100,11 +63,13 @@ pip install pymavlink
 Simply press **Enter** for each prompt to accept default settings (Native GUI, `./logs`, `./csv`):
 
 #### 🐧 On Linux, macOS, WSL, or Git Bash:
+
 ```bash
 ./log-viewer
 ```
 
 #### 🪟 On Windows:
+
 - **Command Prompt (`cmd.exe`)**:
   ```cmd
   log-viewer.bat
