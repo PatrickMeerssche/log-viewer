@@ -4,6 +4,7 @@ mod gui;
 mod log_scanner;
 mod messages_loader;
 mod models;
+mod plot_export;
 mod plot_state;
 mod web_server;
 

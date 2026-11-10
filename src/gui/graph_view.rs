@@ -157,6 +157,59 @@ pub fn render_graph_view(
                     {
                         state.request_reset_bounds = true;
                     }
+
+                    ui.separator();
+
+                    // Export Image menu
+                    ui.menu_button(RichText::new("📷 Export Plot").strong().color(Color32::from_rgb(110, 231, 183)), |ui| {
+                        if ui
+                            .button("📐 Save as Vector SVG (.svg)...")
+                            .on_hover_text("High-resolution scalable vector graphic for papers, posters, and reports")
+                            .clicked()
+                        {
+                            ui.close();
+                            let palette = get_color_palette();
+                            let svg_data = crate::plot_export::export_plot_to_svg(
+                                &table.name,
+                                &state.selected_x,
+                                &state.cached_series,
+                                &palette,
+                                1920,
+                                1080,
+                            );
+                            if let Some(path) = rfd::FileDialog::new()
+                                .set_file_name(&format!("{}_plot.svg", table.name))
+                                .add_filter("SVG Image", &["svg"])
+                                .save_file()
+                            {
+                                let _ = crate::plot_export::save_svg_file(&path, &svg_data);
+                            }
+                        }
+
+                        if ui
+                            .button("🖼️ Save as High-Res PNG (.png)...")
+                            .on_hover_text("Export 1920x1080 high-definition raster image")
+                            .clicked()
+                        {
+                            ui.close();
+                            let palette = get_color_palette();
+                            if let Some(path) = rfd::FileDialog::new()
+                                .set_file_name(&format!("{}_plot.png", table.name))
+                                .add_filter("PNG Image", &["png"])
+                                .save_file()
+                            {
+                                let _ = crate::plot_export::export_plot_to_png(
+                                    &path,
+                                    &table.name,
+                                    &state.selected_x,
+                                    &state.cached_series,
+                                    &palette,
+                                    1920,
+                                    1080,
+                                );
+                            }
+                        }
+                    });
                 });
             });
 

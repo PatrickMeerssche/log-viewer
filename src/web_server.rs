@@ -506,6 +506,10 @@ tr:hover td { background: var(--bg-hover); }
           </select>
         </div>
         <button class="btn" style="margin-top: 14px;" onclick="loadPlot()">Update Plot</button>
+        <div style="margin-left: auto; display: flex; gap: 8px; align-items: flex-end; margin-top: 14px;">
+          <button class="btn btn-sm" onclick="exportWebPlot('png')" title="Export high-resolution PNG">📷 Export PNG</button>
+          <button class="btn btn-sm" onclick="exportWebPlot('svg')" title="Export vector SVG">📐 Export SVG</button>
+        </div>
       </div>
       <div class="chart-wrapper">
         <div id="plotDiv"></div>
@@ -901,6 +905,21 @@ async function loadPlot() {
   };
 
   Plotly.newPlot('plotDiv', traces, layout, { responsive: true });
+}
+
+function exportWebPlot(format) {
+  const plotDiv = document.getElementById('plotDiv');
+  if (!plotDiv || !plotDiv.data || plotDiv.data.length === 0) {
+    alert('Please select variables and generate a plot before exporting.');
+    return;
+  }
+  const filename = activeTable ? `${activeTable.name}_telemetry` : 'telemetry_plot';
+  Plotly.downloadImage(plotDiv, {
+    format: format,
+    width: 1920,
+    height: 1080,
+    filename: filename
+  });
 }
 
 function prevPage() {

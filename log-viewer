@@ -4,9 +4,13 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-# Ensure binary is built (check Linux ELF and Windows .exe)
+# Ensure binary is built (check current dir, release, or debug)
 BIN=""
-if [ -x "./target/release/log_visualizer" ]; then
+if [ -x "./log_visualizer" ]; then
+    BIN="./log_visualizer"
+elif [ -x "./log_visualizer.exe" ]; then
+    BIN="./log_visualizer.exe"
+elif [ -x "./target/release/log_visualizer" ]; then
     BIN="./target/release/log_visualizer"
 elif [ -x "./target/release/log_visualizer.exe" ]; then
     BIN="./target/release/log_visualizer.exe"

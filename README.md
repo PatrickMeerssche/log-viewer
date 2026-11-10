@@ -1,8 +1,34 @@
 # Telemetry & Flight Log Visualizer
 
-A fast, interactive Rust desktop & web application to scan, convert, inspect, and graph ArduPilot (`.bin`), MAVLink telemetry (`.tlog`), and CSV logs from `./logs`.
+[![CI](https://github.com/PatrickMeerssche/log-viewer/actions/workflows/ci.yml/badge.svg)](https://github.com/PatrickMeerssche/log-viewer/actions/workflows/ci.yml)
+[![GitHub release](https://img.shields.io/github/v/release/PatrickMeerssche/log-viewer?color=22c55e&label=latest%20release)](https://github.com/PatrickMeerssche/log-viewer/releases)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows-blue)](https://github.com/PatrickMeerssche/log-viewer)
+[![Rust](https://img.shields.io/badge/rust-1.75%2B-orange.svg)](https://www.rust-lang.org)
+
+A fast, interactive cross-platform Rust desktop & web application to scan, convert, inspect, and graph ArduPilot (`.bin`), MAVLink telemetry (`.tlog`), and CSV logs from `./logs`.
 
 ---
+
+## 📦 Pre-compiled Standalone Releases (No Rust Required!)
+
+If you just want to run the visualizer without installing Rust or Cargo:
+
+1. Head over to the **[GitHub Releases Page](https://github.com/PatrickMeerssche/log-viewer/releases)**.
+2. Download the pre-built package for your operating system:
+   - **Windows**: `log-viewer-windows-x86_64.zip`
+   - **Linux**: `log-viewer-linux-x86_64.tar.gz`
+3. Extract the archive.
+4. Run `./log-viewer` (Linux) or double-click `log-viewer.bat` (Windows)!
+
+---
+
+## 📸 Export Plots to High-Resolution Images
+
+Export publication-ready graphs directly from both Desktop and Web interfaces:
+- **Vector SVG (`.svg`)**: Crisp, infinitely scalable vector graphics for reports, papers, and presentations with grid lines, axes labels, and legend.
+- **High-Resolution PNG (`.png`)**: Standalone, lossless raster image rendering of the active plot.
+- **Desktop GUI**: Click `📷 Export Plot` in the graph toolbar and select **Vector SVG** or **High-Res PNG**.
+- **Web Dashboard**: Click `📷 Export PNG` or `📐 Export SVG` right next to the chart controls to instantly download the graph.
 
 ---
 
@@ -144,6 +170,10 @@ OPTIONS:
 
 ```
 log-viewer/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml              # Automated cross-platform CI (Ubuntu & Windows)
+│       └── release.yml         # Automated GitHub Release packaging (.zip & .tar.gz)
 ├── Cargo.toml
 ├── logs/                   # Directory for flight logs (.bin, .tlog, .csv)
 ├── csv/                    # Extracted CSV tables organized by log stem
@@ -162,11 +192,12 @@ log-viewer/
     ├── messages_loader.rs  # Parser for MSG, STATUSTEXT, ERR, EV tables & decoders
     ├── csv_loader.rs       # Fast CSV parser, stats calculator & series extractor
     ├── plot_state.rs       # Plot configurations, series caching & downsampling
+    ├── plot_export.rs      # High-res SVG & PNG graph export engine
     ├── web_server.rs       # Embedded tiny_http server & Plotly.js dashboard
     └── gui/
         ├── mod.rs
         ├── sidebar.rs      # Log & Table tree navigation
-        ├── graph_view.rs   # egui_plot interactive charting canvas
+        ├── graph_view.rs   # egui_plot interactive charting canvas & image exporter
         ├── table_view.rs   # Sortable, searchable paginated data table
         ├── stats_view.rs   # Summary stats per column
         ├── messages_view.rs# Messages, flight events, warnings & errors timeline

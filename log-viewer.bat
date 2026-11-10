@@ -6,7 +6,9 @@ cd /d "%~dp0"
 
 :: 1. Locate or build the executable
 set "BIN="
-if exist ".\target\release\log_visualizer.exe" (
+if exist ".\log_visualizer.exe" (
+    set "BIN=.\log_visualizer.exe"
+) else if exist ".\target\release\log_visualizer.exe" (
     set "BIN=.\target\release\log_visualizer.exe"
 ) else if exist ".\target\debug\log_visualizer.exe" (
     set "BIN=.\target\debug\log_visualizer.exe"

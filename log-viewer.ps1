@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Cross-platform PowerShell launcher for Telemetry & Flight Log Visualizer.
 .DESCRIPTION
@@ -20,22 +20,29 @@ Set-Location $ScriptDir
 
 # Determine executable name based on OS
 $ExeName = if ($IsWindows -or ($env:OS -like "*Windows*")) { "log_visualizer.exe" } else { "log_visualizer" }
-$BinPath = Join-Path $ScriptDir "target\release\$ExeName"
+$BinPath = Join-Path $ScriptDir $ExeName
 
 if (-not (Test-Path $BinPath)) {
-    $DebugBin = Join-Path $ScriptDir "target\debug\$ExeName"
-    if (Test-Path $DebugBin) {
-        $BinPath = $DebugBin
+    $ReleaseBin = Join-Path $ScriptDir "target\release\$ExeName"
+    if (Test-Path $ReleaseBin) {
+        $BinPath = $ReleaseBin
     } else {
-        Write-Host "⚙️ Building log_visualizer binary (first run)..." -ForegroundColor Cyan
-        if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
-            Write-Error "Cargo / Rust is not found in PATH! Please install Rust from https://rustup.rs/"
-            exit 1
-        }
-        cargo build --release
-        if (-not (Test-Path $BinPath)) {
-            Write-Error "Build failed or binary not found at $BinPath"
-            exit 1
+        $DebugBin = Join-Path $ScriptDir "target\debug\$ExeName"
+        if (Test-Path $DebugBin) {
+            $BinPath = $DebugBin
+        } else {
+            Write-Host "⚙️ Building log_visualizer binary (first run)..." -ForegroundColor Cyan
+            if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
+                Write-Error "Cargo / Rust is not found in PATH! Please install Rust from https://rustup.rs/"
+                exit 1
+            }
+            cargo build --release
+            if (Test-Path $ReleaseBin) {
+                $BinPath = $ReleaseBin
+            } else {
+                Write-Error "Build failed or binary not found at $ReleaseBin"
+                exit 1
+            }
         }
     }
 }
