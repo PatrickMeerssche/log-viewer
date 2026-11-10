@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Cross-platform PowerShell launcher for Telemetry & Flight Log Visualizer.
 .DESCRIPTION
