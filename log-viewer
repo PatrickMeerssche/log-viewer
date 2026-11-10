@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+# Ensure binary is built (check Linux ELF and Windows .exe)
+BIN=""
+if [ -x "./target/release/log_visualizer" ]; then
+    BIN="./target/release/log_visualizer"
+elif [ -x "./target/release/log_visualizer.exe" ]; then
+    BIN="./target/release/log_visualizer.exe"
+elif [ -x "./target/debug/log_visualizer" ]; then
+    BIN="./target/debug/log_visualizer"
+elif [ -x "./target/debug/log_visualizer.exe" ]; then
+    BIN="./target/debug/log_visualizer.exe"
+else
+    echo "⚙️ Building log_visualizer binary (first run)..."
+    cargo build --release
+    if [ -x "./target/release/log_visualizer.exe" ]; then
+        BIN="./target/release/log_visualizer.exe"
+    else
+        BIN="./target/release/log_visualizer"
+    fi
+fi
+
+# If arguments are passed directly on command line, pass them straight to binary
+if [ $# -gt 0 ]; then
+    exec "$BIN" "$@"
+fi
+
+# Colors for terminal
+BOLD='\033[1m'
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RESET='\033[0m'
+
+echo -e "${BOLD}${CYAN}======================================================${RESET}"
+echo -e "${BOLD}${CYAN}   ✈️  Telemetry & Flight Log Visualizer Launcher    ${RESET}"
+echo -e "${BOLD}${CYAN}======================================================${RESET}"
+echo -e "Press ${BOLD}[Enter]${RESET} to accept the default for any setting.\n"
+
+# 1. Ask for Web vs Desktop GUI mode
+echo -e "${BOLD}1. Interface Mode:${RESET}"
+echo -e "   [1] Native Desktop GUI  ${GREEN}(default)${RESET}"
+echo -e "   [2] Web Dashboard (Browser)"
+read -r -p "Select mode [1/2, default: 1]: " MODE_INPUT
+MODE_INPUT=$(echo "$MODE_INPUT" | tr '[:upper:]' '[:lower:]' | xargs)
+
+WEB_FLAG=""
+if [[ "$MODE_INPUT" == "2" || "$MODE_INPUT" == "web" || "$MODE_INPUT" == "w" || "$MODE_INPUT" == "y" || "$MODE_INPUT" == "yes" ]]; then
+    WEB_FLAG="--web"
+    echo -e "Selected: ${GREEN}Web Dashboard Mode${RESET}\n"
+else
+    echo -e "Selected: ${GREEN}Native Desktop GUI Mode${RESET}\n"
+fi
+
+# 2. Ask for Logs directory
+echo -e "${BOLD}2. Logs Directory:${RESET}"
+read -r -p "Enter logs folder [default: ./logs]: " LOGS_INPUT
+LOGS_INPUT=$(echo "$LOGS_INPUT" | xargs)
+if [ -z "$LOGS_INPUT" ]; then
+    LOGS_DIR="./logs"
+else
+    LOGS_DIR="$LOGS_INPUT"
+fi
+echo -e "Selected logs dir: ${GREEN}${LOGS_DIR}${RESET}\n"
+
+# 3. Ask for CSV output directory
+echo -e "${BOLD}3. CSV Output Directory:${RESET}"
+read -r -p "Enter CSV folder [default: ./csv]: " CSV_INPUT
+CSV_INPUT=$(echo "$CSV_INPUT" | xargs)
+if [ -z "$CSV_INPUT" ]; then
+    CSV_DIR="./csv"
+else
+    CSV_DIR="$CSV_INPUT"
+fi
+echo -e "Selected CSV dir: ${GREEN}${CSV_DIR}${RESET}\n"
+
+# 4. Ask for Port (if in web mode or as optional setting)
+PORT_FLAG=""
+if [ -n "$WEB_FLAG" ]; then
+    echo -e "${BOLD}4. Web Server Port:${RESET}"
+    read -r -p "Enter port number [default: 8080]: " PORT_INPUT
+    PORT_INPUT=$(echo "$PORT_INPUT" | xargs)
+    if [ -z "$PORT_INPUT" ]; then
+        PORT="8080"
+    else
+        PORT="$PORT_INPUT"
+    fi
+    PORT_FLAG="--port $PORT"
+    echo -e "Selected port: ${GREEN}${PORT}${RESET}\n"
+fi
+
+# Assemble arguments
+ARGS=("--logs" "$LOGS_DIR" "--csv" "$CSV_DIR")
+if [ -n "$WEB_FLAG" ]; then
+    ARGS+=("$WEB_FLAG")
+fi
+if [ -n "$PORT_FLAG" ]; then
+    ARGS+=($PORT_FLAG)
+fi
+
+echo -e "${CYAN}------------------------------------------------------${RESET}"
+echo -e "🚀 Launching: ${BOLD}$BIN ${ARGS[*]}${RESET}"
+echo -e "${CYAN}------------------------------------------------------${RESET}\n"
+
+exec "$BIN" "${ARGS[@]}"

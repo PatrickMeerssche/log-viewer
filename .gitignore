@@ -1,0 +1,17 @@
+# Build output
+/target/
+
+# Generated CSV tables
+/csv/*
+!/csv/.gitkeep
+
+# User flight logs (sensitive telemetry data)
+/logs/*
+!/logs/.gitkeep
+
+# Ignore all telemetry log formats everywhere
+*.bin
+*.tlog
+*.kml
+*.csv
+*.log
