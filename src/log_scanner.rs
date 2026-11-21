@@ -2,7 +2,6 @@ use crate::models::{ConversionStatus, LogEntry, TableMeta};
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 pub fn safe_stem(stem: &str) -> String {
     stem.chars()
@@ -228,46 +227,70 @@ pub fn inspect_table_file(path: &Path, explicit_name: Option<String>) -> Option<
 pub fn convert_log_sync(
     log_path: &Path,
     output_dir: &Path,
-    script_path: &Path,
+    _script_path: &Path,
 ) -> Result<(usize, String), String> {
     fs::create_dir_all(output_dir).map_err(|e| format!("Failed to create output dir: {}", e))?;
 
-    let py_cmd = if Command::new("python3").arg("--version").output().is_ok() {
-        "python3"
-    } else {
-        "python"
-    };
-
-    let output = Command::new(py_cmd)
-        .arg(script_path)
-        .arg(log_path)
-        .arg("-o")
-        .arg(output_dir)
-        .output()
-        .map_err(|e| format!("Failed to execute converter script: {}", e))?;
-
-    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
-    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
-
-    if !output.status.success() {
-        return Err(format!(
-            "Conversion error (exit code {:?}):\n{}\n{}",
-            output.status.code(),
-            stderr.trim(),
-            stdout.trim()
-        ));
-    }
+    let log = flightlog_core::Log::open(log_path, &flightlog_core::ReadOptions::default())
+        .map_err(|e| format!("Failed to read {}: {}", log_path.display(), e))?;
+    let base = safe_stem(
+        &log_path
+            .file_stem()
+            .map(|s| s.to_string_lossy().to_string())
+            .unwrap_or_default(),
+    );
+    let time_col = log.time_column();
+    let utc_offset_us = log.utc_offset_us.unwrap_or(0);
 
     let mut table_count = 0;
-    if let Ok(rd) = fs::read_dir(output_dir) {
-        for entry in rd.flatten() {
-            if entry.path().extension().map(|e| e == "csv").unwrap_or(false) {
-                table_count += 1;
-            }
+    for table in log.tables() {
+        let out_file = output_dir.join(format!("{}__{}.csv", base, table.name));
+        let mut w = csv::Writer::from_path(&out_file)
+            .map_err(|e| format!("Failed to write {}: {}", out_file.display(), e))?;
+        let time = table.column(time_col).map(|c| &c.data);
+        let mut header: Vec<&str> = table.columns.iter().map(|c| c.name.as_str()).collect();
+        if time.is_some() {
+            header.push("_timestamp");
         }
+        w.write_record(&header).map_err(|e| e.to_string())?;
+        for row in 0..table.rows {
+            let mut rec: Vec<String> = table.columns.iter().map(|c| cell(&c.data, row)).collect();
+            if let Some(t) = time.and_then(|t| t.get_i64(row)) {
+                rec.push(((t + utc_offset_us) as f64 / 1e6).to_string());
+            }
+            w.write_record(&rec).map_err(|e| e.to_string())?;
+        }
+        w.flush().map_err(|e| e.to_string())?;
+        table_count += 1;
     }
 
-    Ok((table_count, stdout))
+    let msg = format!(
+        "Converted {}: {} messages -> {} CSV files",
+        log_path.display(),
+        log.integrity.messages,
+        table_count
+    );
+    Ok((table_count, msg))
+}
+
+fn cell(data: &flightlog_core::ColumnData, row: usize) -> String {
+    use flightlog_core::ColumnData::*;
+    match data {
+        Float32(v) => v[row].to_string(),
+        Float64(v) => v[row].to_string(),
+        Utf8(_) => data.get_str(row).unwrap_or_default().to_string(),
+        Binary(v) => v.get(row).iter().map(|b| format!("{:02x}", b)).collect(),
+        FixedList { size, values } => {
+            let items: Vec<String> = (row * size..(row + 1) * size)
+                .map(|i| cell(values, i))
+                .collect();
+            format!("[{}]", items.join(", "))
+        }
+        _ => data
+            .get_i64(row)
+            .map(|v| v.to_string())
+            .unwrap_or_else(|| data.get_f64(row).map(|v| v.to_string()).unwrap_or_default()),
+    }
 }
 
 #[cfg(test)]
@@ -291,5 +314,41 @@ mod tests {
             parse_table_name("log_494_UnknownDate__BAT.csv", "log_494_UnknownDate"),
             "BAT"
         );
+    }
+    fn fmt_record(ty: u8, len: u8, name: &str, format: &str, cols: &str) -> Vec<u8> {
+        let mut b = vec![0xA3, 0x95, 0x80, ty, len];
+        for (text, width) in [(name, 4), (format, 16), (cols, 64)] {
+            let mut f = text.as_bytes().to_vec();
+            f.resize(width, 0);
+            b.extend(f);
+        }
+        b
+    }
+
+    #[test]
+    fn test_convert_bin_without_python() {
+        let dir = std::env::temp_dir().join(format!("log_viewer_convert_{}", std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).unwrap();
+
+        let mut bin = fmt_record(0x80, 89, "FMT", "BBnNZ", "Type,Length,Name,Format,Columns");
+        bin.extend(fmt_record(0x81, 15, "BAT", "Qf", "TimeUS,Curr"));
+        for (t, curr) in [(1_000_000u64, 12.5f32), (2_000_000, 13.25)] {
+            bin.extend([0xA3, 0x95, 0x81]);
+            bin.extend(t.to_le_bytes());
+            bin.extend(curr.to_le_bytes());
+        }
+        let log_path = dir.join("flight 1.bin");
+        fs::write(&log_path, &bin).unwrap();
+
+        let out = dir.join("csv");
+        let (tables, _) = convert_log_sync(&log_path, &out, Path::new("missing.py")).unwrap();
+        assert_eq!(tables, 2);
+        let csv = fs::read_to_string(out.join("flight_1__BAT.csv")).unwrap();
+        assert_eq!(
+            csv,
+            "TimeUS,Curr,_timestamp\n1000000,12.5,1\n2000000,13.25,2\n"
+        );
+        let _ = fs::remove_dir_all(&dir);
     }
 }
